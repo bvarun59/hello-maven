@@ -6,6 +6,11 @@ pipeline{
         jdk 'jdk'
     }
 
+    environment {
+        $IMAGE = varundocker3\mavenapp:v1
+
+    }
+
     stages{
         stage("clean"){
           steps{
@@ -31,6 +36,24 @@ pipeline{
             steps{
                sh 'mvn package'
                 archiveArtifacts artifacts: 'target/*.jar', followSymlinks: true
+            }
+        }
+        stage("login to dockerhub"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'Dockerhub-Cred', passwordVariable: 'dhubpass', usernameVariable: 'dhubuser')]) {
+                 sh 'echo $dhubpass | docker login -u $dhubuser --password-stdin'
+                }    
+            }            
+        }
+        stage("build image"){
+            steps{
+                sh 'docker build -t $IMAGE .'  
+            }
+        }
+        stage{"deploy container"}{
+            steps{
+                sh 'docker pull $IMAGE'
+                sh 'docker run -d -p 1515:8080 --name mavenapp $IMAGE'
             }
         }
 
