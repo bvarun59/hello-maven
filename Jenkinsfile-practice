@@ -1,0 +1,37 @@
+pipeline{
+    agent any
+
+    tools{
+
+    }
+
+    stages{
+        stage("clean"){
+          steps{
+                mvn clean
+          }  
+        }
+        stage("validate"){
+           steps{
+                mvn validate
+           }    
+        }
+        stage("compile"){
+            steps{
+                mvn compile
+            }
+        }
+        stage("test"){
+            steps{
+                mvn test
+            }
+        }
+        stage("package"){
+            steps{
+                mvn package
+                archiveArtifacts artifacts: '*.jar', followSymlinks: true
+            }
+        }
+
+    }
+}
