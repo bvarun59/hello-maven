@@ -2,33 +2,34 @@ pipeline{
     agent any
 
     tools{
-
+        maven:maven
+        jdk:jdk
     }
 
     stages{
         stage("clean"){
           steps{
-                mvn clean
+             sh 'mvn clean'
           }  
         }
         stage("validate"){
            steps{
-                mvn validate
+              sh 'mvn validate'
            }    
         }
         stage("compile"){
             steps{
-                mvn compile
+              sh 'mvn compile'
             }
         }
         stage("test"){
             steps{
-                mvn test
+              sh 'mvn test'
             }
         }
         stage("package"){
             steps{
-                mvn package
+               sh 'mvn package'
                 archiveArtifacts artifacts: '*.jar', followSymlinks: true
             }
         }
