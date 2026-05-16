@@ -49,7 +49,7 @@ pipeline{
                 sh 'docker build -t $IMAGE .'  
             }
         }
-        stage{"deploy container"}{
+        stage("deploy container"){
             steps{
                 sh 'docker pull $IMAGE'
                 sh 'docker run -d -p 1515:8080 --name mavenapp $IMAGE'
