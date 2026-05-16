@@ -60,7 +60,7 @@ pipeline{
 
                 sh """
                     ssh -i $ssh_key -o StrictHostKeyChecking=no $ssh_user@$winserverip powershell -Command "
-                        echo $dhubpass | docker login -u $dhubuser --password-stdin 
+                        echo \$dhubpass | docker login -u \$dhubuser --password-stdin 
 
                         docker pull ${IMAGE}
                         docker stop ${Containername} 
