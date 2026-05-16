@@ -55,12 +55,12 @@ pipeline{
         stage("deploy container"){
             steps{
                 withCredentials([
-                    sshUserPrivateKey(credentialsId: 'ssh-cred-win', keyFileVariable: 'sshwin', usernameVariable: 'ssh-winuser'),
+                    sshUserPrivateKey(credentialsId: 'ssh-cred-win', keyFileVariable: 'ssh_key', usernameVariable: 'ssh_user'),
                     usernamePassword(credentialsId: 'Dockerhub-Cred', passwordVariable: 'dhubpass', usernameVariable: 'dhubuser')
                     ]) {
 
                 sh """
-                    ssh -i $sshwin -o StrictHostKeyChecking=no $ssh-winuser@$winserverip '
+                    ssh -i $ssh_key -o StrictHostKeyChecking=no $ssh_user@$winserverip '
                         echo $dhubpass | docker login -u $dhubuser --password-stdin 
                         docker desktop start || true
                         docker pull $IMAGE
