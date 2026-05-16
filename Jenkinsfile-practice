@@ -56,8 +56,7 @@ pipeline{
             steps{
                 withCredentials([
                     sshUserPrivateKey(credentialsId: 'ssh-cred-win', keyFileVariable: 'ssh_key', usernameVariable: 'ssh_user'),
-                    usernamePassword(credentialsId: 'Dockerhub-Cred', passwordVariable: 'dhubpass', usernameVariable: 'dhubuser')
-                    ]) {
+                    usernamePassword(credentialsId: 'Dockerhub-Cred', passwordVariable: 'dhubpass', usernameVariable: 'dhubuser')]) {
 
                 sh """
                     ssh -i $ssh_key -o StrictHostKeyChecking=no $ssh_user@$winserverip '
