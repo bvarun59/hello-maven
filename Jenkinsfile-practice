@@ -59,14 +59,14 @@ pipeline{
                     usernamePassword(credentialsId: 'Dockerhub-Cred', passwordVariable: 'dhubpass', usernameVariable: 'dhubuser')]) {
 
                 sh """
-                    ssh -i $ssh_key -o StrictHostKeyChecking=no $ssh_user@$winserverip powershell -Command "
-                        echo \$dhubpass | docker login -u \$dhubuser --password-stdin 
+                    ssh -i $ssh_key -o StrictHostKeyChecking=no $ssh_user@$winserverip '
+                        echo $dhubpass | docker login -u $dhubuser --password-stdin 
 
                         docker pull ${IMAGE}
                         docker stop ${Containername} 
                         docker rm ${Containername}
                         docker run -d -p 1515:8080 --name ${Containername} ${IMAGE}
-                        "
+                        '
                     """
                 }
             }
