@@ -60,7 +60,8 @@ pipeline{
                     ]) {
 
                 sh """
-                    ssh -i $sshwin -o StrictHostKeyChecking=no $ssh-winuser@$winserverip ' 
+                    ssh -i $sshwin -o StrictHostKeyChecking=no $ssh-winuser@$winserverip '
+                        echo $dhubpass | docker login -u $dhubuser --password-stdin 
                         docker desktop start || true
                         docker pull $IMAGE
                         docker stop $Containername || true
