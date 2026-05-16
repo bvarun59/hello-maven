@@ -8,6 +8,8 @@ pipeline{
 
     environment {
         IMAGE = "varundocker3/mavenapp:v1"
+        winserverip = "192.168.0.8"
+        Containername = "mavenapp"
     }
 
     stages{
@@ -52,8 +54,21 @@ pipeline{
         }
         stage("deploy container"){
             steps{
-                sh 'docker pull $IMAGE'
-                sh 'docker run -d -p 1515:8080 --name mavenapp $IMAGE'
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'ssh-cred-win', keyFileVariable: 'sshwin', usernameVariable: 'ssh-winuser'),
+                    usernamePassword(credentialsId: 'Dockerhub-Cred', passwordVariable: 'dhubpass', usernameVariable: 'dhubuser')
+                    ]) {
+
+                sh """
+                    ssh -i $sshwin -o StrictHostKeyChecking=no $ssh-winuser@$winserverip ' 
+                        docker desktop start || true
+                        docker pull $IMAGE
+                        docker stop $Containername || true
+                        docker rm $Containername || true
+                        docker run -d -p 1515:8080 --name $Containername $IMAGE
+                        '
+                    """
+                }
             }
         }
 
