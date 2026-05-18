@@ -9,7 +9,7 @@ pipeline{
         stage("compile"){
             steps{
                 sh 'mkdir -p $WORKSPACE/.m2/repository'
-                sh 'mvn clean compile'
+                sh 'mvn clean compile -Dmaven.repo.local=$WORKSPACE/.m2/repository'
             }
         }
         stage("package"){
