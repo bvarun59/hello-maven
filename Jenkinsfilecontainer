@@ -2,19 +2,21 @@ pipeline{
     agent {
         docker {
             image 'maven:3.9.15-eclipse-temurin-26'
-           // args '-v $HOME/.m2:/root/.m2'
         }
     }
+    environment {
+    MAVEN_OPTS = "-Dmaven.repo.local=$WORKSPACE/.m2/repository" //this path default it looks for maven compile and package
+}
     stages{
         stage("compile"){
             steps{
-                sh 'mkdir -p $WORKSPACE/.m2/repository'
-                sh 'mvn clean compile -Dmaven.repo.local=$WORKSPACE/.m2/repository'
+                sh 'mkdir -p $WORKSPACE/.m2/repository' // this path is needed beacuse since container works on root user, but since we are running as jenkins user , it wont have permission to create local repo, hence doing manually and setting env using maven_opts
+                sh 'mvn clean compile'
             }
         }
         stage("package"){
             steps{
-                sh 'mvn package -Dmaven.repo.local=$WORKSPACE/.m2/repository'
+                sh 'mvn package'
             }
         }
         stage("artifact"){
